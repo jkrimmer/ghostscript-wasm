@@ -22,6 +22,9 @@ cd "$ROOT/lib/ghostscript"
 # There is a bug in this version of Ghostscript that prevents passing in gcc to compile the build tools, replace the var manually.
 sed -i "s/CCAUX=@CC@/CCAUX=gcc/g" base/Makefile.in
 
+# Run the following to avoid "cannot find required auxiliary files: config.guess config.sub"
+autoreconf --install
+
 emconfigure ./autogen.sh \
   CFLAGSAUX= CPPFLAGSAUX= \
   --host="wasm32-unknown-linux" \
@@ -44,7 +47,7 @@ export GS_LDFLAGS="\
 
 emmake make \
   LDFLAGS="$LDFLAGS $GS_LDFLAGS" \
-  prefix="/ghostscript" \
+  prefix="$OUT_DIR" \
   -j install
 
 exit 1
